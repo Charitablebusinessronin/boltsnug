@@ -1,7 +1,16 @@
-// Zoho Catalyst SDK Integration
+// Zoho Catalyst SDK Integration for Healthcare Platform
 declare global {
   interface Window {
-    catalyst: any;
+    catalyst: {
+      auth: {
+        signIn: (credentials: { email_id: string; password: string }) => Promise<{ status: string; data: CatalystUser; message?: string }>;
+        signOut: () => Promise<void>;
+        getCurrentUser: () => Promise<{ status: string; data: CatalystUser }>;
+      };
+      function: {
+        execute: (functionName: string, data: unknown) => Promise<unknown>;
+      };
+    };
   }
 }
 
@@ -11,6 +20,16 @@ export interface CatalystConfig {
   domain: string;
 }
 
+export interface CatalystUser {
+  user_id: string;
+  email_id: string;
+  first_name: string;
+  last_name: string;
+  user_role_details: {
+    role_name: string;
+  };
+}
+
 export class CatalystService {
   private static instance: CatalystService;
   private isInitialized = false;
@@ -18,9 +37,9 @@ export class CatalystService {
 
   constructor() {
     this.config = {
-      projectId: process.env.NEXT_PUBLIC_CATALYST_PROJECT_ID || '30300000000011038',
-      environment: process.env.NEXT_PUBLIC_ENVIRONMENT || 'development',
-      domain: process.env.NEXT_PUBLIC_CATALYST_APP_URL || 'https://project-rainfall-891140386.development.catalystserverless.com'
+      projectId: import.meta.env.VITE_CATALYST_PROJECT_ID || '30300000000011038',
+      environment: import.meta.env.VITE_ENVIRONMENT || 'development',
+      domain: import.meta.env.VITE_CATALYST_APP_URL || 'https://project-rainfall-891140386.development.catalystserverless.com'
     };
   }
 
@@ -35,19 +54,11 @@ export class CatalystService {
     if (this.isInitialized) return;
 
     try {
-      // Wait for Catalyst SDK to load
+      // With embedded auth, initialization is handled by /__catalyst/sdk/init.js
+      // We just need to wait for the SDK to be available
       await this.waitForCatalyst();
-      
-      // Initialize Catalyst
-      if (window.catalyst) {
-        await window.catalyst.initialize({
-          projectId: this.config.projectId,
-          environment: this.config.environment
-        });
-        
-        this.isInitialized = true;
-        console.log('Catalyst SDK initialized successfully');
-      }
+      this.isInitialized = true;
+      console.log('Catalyst SDK initialized via embedded auth script');
     } catch (error) {
       console.error('Failed to initialize Catalyst SDK:', error);
       throw error;
@@ -60,7 +71,7 @@ export class CatalystService {
       const maxAttempts = 50;
       
       const checkCatalyst = () => {
-        if (window.catalyst) {
+        if (window.catalyst && window.catalyst.auth) {
           resolve();
         } else if (attempts < maxAttempts) {
           attempts++;
@@ -74,21 +85,25 @@ export class CatalystService {
     });
   }
 
-  public async signIn(email: string, password: string): Promise<any> {
+  public async signIn(email: string, password: string): Promise<CatalystUser> {
     if (!this.isInitialized) {
       await this.initialize();
     }
 
     try {
       const response = await window.catalyst.auth.signIn({
-        email,
-        password
+        email_id: email,
+        password: password
       });
       
-      return response;
+      if (response.status === 'success') {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'Authentication failed');
+      }
     } catch (error) {
       console.error('Catalyst sign in error:', error);
-      throw error;
+      throw new Error('Invalid email or password. Please try again.');
     }
   }
 
@@ -97,26 +112,62 @@ export class CatalystService {
 
     try {
       await window.catalyst.auth.signOut();
+      localStorage.removeItem('catalyst_user');
+      sessionStorage.removeItem('catalyst_session');
     } catch (error) {
       console.error('Catalyst sign out error:', error);
       throw error;
     }
   }
 
-  public async getCurrentUser(): Promise<any> {
+  public async getCurrentUser(): Promise<CatalystUser | null> {
     if (!this.isInitialized) {
       await this.initialize();
     }
 
     try {
-      return await window.catalyst.auth.getCurrentUser();
+      const response = await window.catalyst.auth.getCurrentUser();
+      if (response && response.status === 'success') {
+        return response.data;
+      }
+      return null;
     } catch (error) {
       console.error('Get current user error:', error);
       return null;
     }
   }
 
-  public async callFunction(functionName: string, data: any): Promise<any> {
+  public async isAuthenticated(): Promise<boolean> {
+    try {
+      const user = await this.getCurrentUser();
+      return user !== null;
+    } catch {
+      return false;
+    }
+  }
+
+  public mapCatalystRoleToAppRole(catalystRole: string): 'client' | 'contractor' | 'admin' | 'employee' {
+    const roleMapping: { [key: string]: 'client' | 'contractor' | 'admin' | 'employee' } = {
+      'Client': 'client',
+      'CLIENT': 'client',
+      'Contractor': 'contractor',
+      'CONTRACTOR': 'contractor', 
+      'Healthcare Provider': 'contractor',
+      'HEALTHCARE_PROVIDER': 'contractor',
+      'Admin': 'admin',
+      'ADMIN': 'admin',
+      'Administrator': 'admin',
+      'ADMINISTRATOR': 'admin',
+      'Employee': 'employee',
+      'EMPLOYEE': 'employee',
+      'Staff': 'employee',
+      'STAFF': 'employee'
+    };
+    
+    return roleMapping[catalystRole] || 'client';
+  }
+
+  public async callFunction(functionName: string, data: unknown): Promise<unknown> {
     if (!this.isInitialized) {
       await this.initialize();
     }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, AuthState } from '../types/auth';
-import { catalyst } from '../lib/catalyst';
+import { catalyst, CatalystUser } from '../lib/catalyst';
 
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -9,22 +9,29 @@ export const useAuth = () => {
     isLoading: true
   });
 
+  const convertCatalystUserToUser = (catalystUser: CatalystUser): User => {
+    const roleName = catalystUser.user_role_details?.role_name || 'Client';
+    const role = catalyst.mapCatalystRoleToAppRole(roleName);
+    
+    return {
+      id: catalystUser.user_id,
+      email: catalystUser.email_id,
+      name: `${catalystUser.first_name} ${catalystUser.last_name || ''}`.trim() || catalystUser.email_id.split('@')[0],
+      role: role,
+      avatar: undefined, // Catalyst doesn't provide avatar by default
+      lastLogin: new Date().toISOString()
+    };
+  };
+
   useEffect(() => {
     const initCatalyst = async () => {
       try {
         await catalyst.initialize();
         
         // Check if user is already authenticated with Catalyst
-        const currentUser = await catalyst.getCurrentUser();
-        if (currentUser) {
-          const user: User = {
-            id: currentUser.user_id || currentUser.id,
-            email: currentUser.email_id || currentUser.email,
-            name: currentUser.first_name ? `${currentUser.first_name} ${currentUser.last_name || ''}`.trim() : currentUser.email?.split('@')[0] || 'User',
-            role: currentUser.role || 'client',
-            avatar: currentUser.profile_picture,
-            lastLogin: new Date().toISOString()
-          };
+        const catalystUser = await catalyst.getCurrentUser();
+        if (catalystUser) {
+          const user = convertCatalystUserToUser(catalystUser);
           
           setAuthState({
             user,
@@ -43,28 +50,16 @@ export const useAuth = () => {
     initCatalyst();
   }, []);
 
-  const signIn = async (email: string, password: string): Promise<boolean> => {
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setAuthState(prev => ({ ...prev, isLoading: true }));
       
       const catalystUser = await catalyst.signIn(email, password);
       
       if (catalystUser) {
-        // Determine user role based on email domain or Catalyst user data
-        const role = catalystUser.role || 
-                    (email.includes('admin') ? 'admin' : 
-                     email.includes('employee') ? 'employee' :
-                     email.includes('contractor') ? 'contractor' : 'client');
-        
-        const user: User = {
-          id: catalystUser.user_id || catalystUser.id,
-          email: catalystUser.email_id || email,
-          name: catalystUser.first_name ? `${catalystUser.first_name} ${catalystUser.last_name || ''}`.trim() : email.split('@')[0],
-          role,
-          avatar: catalystUser.profile_picture,
-          lastLogin: new Date().toISOString()
-        };
+        const user = convertCatalystUserToUser(catalystUser);
 
+        // Store user session
         localStorage.setItem('snugs-user', JSON.stringify(user));
         setAuthState({
           user,
@@ -72,15 +67,16 @@ export const useAuth = () => {
           isLoading: false
         });
         
-        return true;
+        return { success: true };
       } else {
         setAuthState(prev => ({ ...prev, isLoading: false }));
-        return false;
+        return { success: false, error: 'Authentication failed' };
       }
     } catch (error) {
       console.error('Sign in error:', error);
       setAuthState(prev => ({ ...prev, isLoading: false }));
-      return false;
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      return { success: false, error: errorMessage };
     }
   };
 

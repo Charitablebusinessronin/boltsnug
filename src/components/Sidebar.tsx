@@ -22,7 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-accent/20 shadow-lg z-50">
+    <div className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-accent/20 shadow-lg z-50 hidden lg:block">
       {/* Logo */}
       <div className="p-6 border-b border-accent/20">
         <div className="flex items-center space-x-3">

@@ -9,6 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Lato:wght@300;400;500;700&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://static.zohocdn.com/catalyst/sdk/js/4.5.0/catalystWebSDK.js"></script>
+    <!-- Dynamically load Catalyst init from your project domain in dev/prod -->
+    <script type="module">
+      const domain = import.meta.env?.VITE_CATALYST_APP_URL;
+      if (domain) {
+        const s = document.createElement('script');
+        s.src = `${domain.replace(/\/$/, '')}/__catalyst/sdk/init.js`;
+        document.head.appendChild(s);
+      } else {
+        console.warn('VITE_CATALYST_APP_URL not set; skipping embedded auth init script load');
+      }
+    </script>
     <script>
       // Initialize Catalyst SDK when available
       window.addEventListener('load', function() {

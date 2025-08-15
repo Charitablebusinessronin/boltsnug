@@ -1,15 +1,21 @@
-import React from 'react';
-import { Briefcase, Calendar, MapPin, DollarSign, Clock, Star, TrendingUp, Users } from 'lucide-react';
+import React, { useState } from 'react';
+import { Briefcase, Calendar, MapPin, DollarSign, Clock, Star, TrendingUp, FileText, GraduationCap, MessageSquare, Award } from 'lucide-react';
+import { JobBoard } from '../contractor/JobBoard';
+import { ApplicationsTracking } from '../contractor/ApplicationsTracking';
+import { DocumentsManagement } from '../contractor/DocumentsManagement';
+import { TrainingModules } from '../contractor/TrainingModules';
+import { MessagesSystem } from '../contractor/MessagesSystem';
 
 export const ContractorDashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'jobs' | 'applications' | 'documents' | 'training' | 'messages'>('jobs');
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary to-primary-dark text-white p-6 rounded-2xl shadow-lg">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-heading text-2xl font-bold mb-2">Your Contractor Dashboard</h2>
-            <p className="font-body text-white/90">Manage your assignments and grow your career</p>
+            <h2 className="font-heading text-2xl font-bold mb-2">Healthcare Provider Portal</h2>
+            <p className="font-body text-white/90">Deliver compassionate care and grow your healthcare career</p>
           </div>
           <div className="bg-white/20 p-4 rounded-full">
             <Briefcase className="h-8 w-8 text-white" />
@@ -19,7 +25,7 @@ export const ContractorDashboard: React.FC = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20 hover:shadow-md transition-all duration-200">
+        <div className="healthcare-card p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-ui text-primary/60 text-sm">Available Jobs</p>
@@ -32,7 +38,7 @@ export const ContractorDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20 hover:shadow-md transition-all duration-200">
+        <div className="healthcare-card p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-ui text-primary/60 text-sm">This Week</p>
@@ -45,7 +51,7 @@ export const ContractorDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20 hover:shadow-md transition-all duration-200">
+        <div className="healthcare-card p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-ui text-primary/60 text-sm">Monthly Earnings</p>
@@ -58,7 +64,7 @@ export const ContractorDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20 hover:shadow-md transition-all duration-200">
+        <div className="healthcare-card p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-ui text-primary/60 text-sm">Client Rating</p>
@@ -72,105 +78,55 @@ export const ContractorDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Today's Schedule & Available Jobs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Today's Schedule */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20">
-          <h3 className="font-heading text-lg font-semibold text-primary mb-4 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-luxury" />
-            Today's Schedule
-          </h3>
-          <div className="space-y-3">
-            {[
-              { time: '9:00 AM - 1:00 PM', client: 'Margaret Thompson', service: 'Personal Care', location: '1.2 miles away' },
-              { time: '2:00 PM - 6:00 PM', client: 'Robert Johnson', service: 'Companion Care', location: '2.8 miles away' },
-              { time: '7:00 PM - 10:00 PM', client: 'Helen Rodriguez', service: 'Evening Care', location: '0.5 miles away' }
-            ].map((shift, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 bg-background rounded-lg">
-                <div className="bg-luxury text-primary p-2 rounded-lg text-xs font-ui font-semibold min-w-[80px] text-center">
-                  {shift.time.split(' - ')[0]}
-                </div>
-                <div className="flex-1">
-                  <p className="font-ui font-medium text-primary">{shift.client}</p>
-                  <p className="font-ui text-sm text-primary/60">{shift.service}</p>
-                  <p className="font-ui text-sm text-primary/50 flex items-center">
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {shift.location}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-ui text-sm text-primary/70">{shift.time.split(' - ')[1]}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Available Jobs */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20">
-          <h3 className="font-heading text-lg font-semibold text-primary mb-4 flex items-center">
-            <Briefcase className="h-5 w-5 mr-2 text-luxury" />
-            Available Jobs
-          </h3>
-          <div className="space-y-3">
-            {[
-              { title: 'Overnight Care Assistant', pay: '$18/hr', duration: '8 hours', location: 'Downtown', urgency: 'High' },
-              { title: 'Weekend Companion', pay: '$16/hr', duration: '6 hours', location: 'Suburbs', urgency: 'Medium' },
-              { title: 'Medical Assistant', pay: '$22/hr', duration: '4 hours', location: 'Midtown', urgency: 'High' }
-            ].map((job, index) => (
-              <div key={index} className="p-3 bg-background rounded-lg border-l-4 border-luxury">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-ui font-medium text-primary">{job.title}</p>
-                    <p className="font-ui text-sm text-primary/60 flex items-center space-x-3">
-                      <span className="flex items-center">
-                        <DollarSign className="h-3 w-3 mr-1" />
-                        {job.pay}
-                      </span>
-                      <span className="flex items-center">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {job.duration}
-                      </span>
-                      <span className="flex items-center">
-                        <MapPin className="h-3 w-3 mr-1" />
-                        {job.location}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`inline-flex px-2 py-1 rounded-full text-xs font-ui font-medium ${
-                      job.urgency === 'High' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'
-                    }`}>
-                      {job.urgency}
-                    </span>
-                  </div>
-                </div>
-                <button className="mt-2 bg-primary text-white px-4 py-1 rounded font-ui text-sm hover:bg-primary-dark transition-colors">
-                  Apply Now
-                </button>
-              </div>
-            ))}
-          </div>
+      {/* Workbench Tabs */}
+      <div className="healthcare-card p-2">
+        <div className="flex flex-wrap gap-2">
+          <button onClick={() => setActiveTab('jobs')} className={`px-3 py-2 rounded-lg text-sm ${activeTab === 'jobs' ? 'bg-luxury text-white' : 'bg-background hover:bg-accent/10'}`}>
+            <span className="inline-flex items-center"><Briefcase className="h-4 w-4 mr-2" /> Job Board</span>
+          </button>
+          <button onClick={() => setActiveTab('applications')} className={`px-3 py-2 rounded-lg text-sm ${activeTab === 'applications' ? 'bg-luxury text-white' : 'bg-background hover:bg-accent/10'}`}>
+            <span className="inline-flex items-center"><Award className="h-4 w-4 mr-2" /> Applications</span>
+          </button>
+          <button onClick={() => setActiveTab('documents')} className={`px-3 py-2 rounded-lg text-sm ${activeTab === 'documents' ? 'bg-luxury text-white' : 'bg-background hover:bg-accent/10'}`}>
+            <span className="inline-flex items-center"><FileText className="h-4 w-4 mr-2" /> Documents</span>
+          </button>
+          <button onClick={() => setActiveTab('training')} className={`px-3 py-2 rounded-lg text-sm ${activeTab === 'training' ? 'bg-luxury text-white' : 'bg-background hover:bg-accent/10'}`}>
+            <span className="inline-flex items-center"><GraduationCap className="h-4 w-4 mr-2" /> Training</span>
+          </button>
+          <button onClick={() => setActiveTab('messages')} className={`px-3 py-2 rounded-lg text-sm ${activeTab === 'messages' ? 'bg-luxury text-white' : 'bg-background hover:bg-accent/10'}`}>
+            <span className="inline-flex items-center"><MessageSquare className="h-4 w-4 mr-2" /> Messages</span>
+          </button>
         </div>
       </div>
 
+      {/* Active Module */}
+      <div>
+        {activeTab === 'jobs' && <JobBoard />}
+        {activeTab === 'applications' && <ApplicationsTracking />}
+        {activeTab === 'documents' && <DocumentsManagement />}
+        {activeTab === 'training' && <TrainingModules />}
+        {activeTab === 'messages' && <MessagesSystem />}
+      </div>
+
       {/* Performance Overview */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20">
-        <h3 className="font-heading text-lg font-semibold text-primary mb-4 flex items-center">
+      
+
+      <div className="healthcare-card p-6">
+        <h3 className="healthcare-heading text-lg font-semibold mb-4 flex items-center">
           <TrendingUp className="h-5 w-5 mr-2 text-luxury" />
-          Performance Overview
+          Healthcare Performance Metrics
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: 'Completed Shifts', value: '127', change: '+8%', period: 'vs last month' },
-            { label: 'On-Time Rate', value: '98%', change: '+2%', period: 'this month' },
-            { label: 'Client Retention', value: '94%', change: '+5%', period: 'this quarter' },
-            { label: 'Referrals Made', value: '12', change: '+4', period: 'this month' }
+            { label: 'Care Hours Completed', value: '287', change: '+12%', period: 'vs last month' },
+            { label: 'Client Satisfaction', value: '4.9/5', change: '+0.2', period: 'this month' },
+            { label: 'Certification Status', value: '100%', change: 'Current', period: 'all docs valid' },
+            { label: 'Positive Reviews', value: '24', change: '+6', period: 'this month' }
           ].map((stat, index) => (
             <div key={index} className="text-center">
-              <p className="font-heading text-2xl font-bold text-primary">{stat.value}</p>
-              <p className="font-ui text-sm text-primary/60">{stat.label}</p>
-              <p className="font-ui text-xs text-green-600 mt-1">
+              <p className="healthcare-heading text-2xl font-bold">{stat.value}</p>
+              <p className="healthcare-text-secondary text-sm">{stat.label}</p>
+              <p className="healthcare-text-secondary text-xs mt-1 text-green-600">
                 {stat.change} {stat.period}
               </p>
             </div>
@@ -179,20 +135,20 @@ export const ContractorDashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-accent/20">
-        <h3 className="font-heading text-lg font-semibold text-primary mb-4">Quick Actions</h3>
+      <div className="healthcare-card p-6">
+        <h3 className="healthcare-heading text-lg font-semibold mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { name: 'Browse Jobs', icon: Briefcase, color: 'bg-blue-100 text-blue-600' },
-            { name: 'Submit Notes', icon: Calendar, color: 'bg-green-100 text-green-600' },
-            { name: 'View Messages', icon: Users, color: 'bg-purple-100 text-purple-600' },
-            { name: 'Update Profile', icon: Star, color: 'bg-yellow-100 text-yellow-600' }
+            { name: 'Find Jobs', icon: Briefcase, color: 'bg-blue-100 text-blue-600' },
+            { name: 'Submit Care Notes', icon: FileText, color: 'bg-green-100 text-green-600' },
+            { name: 'Client Messages', icon: MessageSquare, color: 'bg-purple-100 text-purple-600' },
+            { name: 'Update Certifications', icon: Award, color: 'bg-yellow-100 text-yellow-600' }
           ].map((action, index) => (
             <button key={index} className="p-4 rounded-lg border border-accent/20 hover:shadow-md transition-all duration-200 text-center group">
               <div className={`${action.color} p-3 rounded-lg mx-auto w-fit mb-2 group-hover:scale-110 transition-transform duration-200`}>
                 <action.icon className="h-6 w-6" />
               </div>
-              <p className="font-ui font-medium text-primary text-sm">{action.name}</p>
+              <p className="healthcare-ui-text font-medium text-sm">{action.name}</p>
             </button>
           ))}
         </div>

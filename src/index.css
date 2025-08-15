@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Healthcare Design System - Snugs & Kisses */
+:root {
+  /* Brand Colors */
+  --color-primary: #3B2352;
+  --color-primary-dark: #2A1A3A;
+  --color-accent: #D7C7ED;
+  --color-accent-light: #E8DCFA;
+  --color-luxury: #D4AF37;
+  --color-luxury-light: #F5E976;
+  --color-background: #F8F6FC;
+  
+  /* Typography Scale */
+  --font-heading: 'Merriweather', serif;
+  --font-body: 'Lato', sans-serif;
+  --font-ui: 'Nunito Sans', sans-serif;
+  
+  /* Shadows for Healthcare UI */
+  --shadow-soft: 0 2px 8px rgba(59, 35, 82, 0.08);
+  --shadow-medium: 0 4px 16px rgba(59, 35, 82, 0.12);
+  --shadow-strong: 0 8px 32px rgba(59, 35, 82, 0.16);
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+/* Base Styles */
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  line-height: 1.6;
+}
+
+/* Healthcare-specific component styles */
+@layer components {
+  .healthcare-card {
+    @apply bg-white rounded-xl shadow-sm border border-accent/20 hover:shadow-md transition-all duration-200;
+  }
+  
+  .healthcare-button-primary {
+    @apply bg-primary text-white font-ui font-semibold px-6 py-3 rounded-lg hover:bg-primary-dark transition-all duration-200 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  .healthcare-button-secondary {
+    @apply bg-white text-primary font-ui font-semibold px-6 py-3 rounded-lg border border-primary hover:bg-primary hover:text-white transition-all duration-200 focus:ring-2 focus:ring-primary/50 focus:outline-none;
+  }
+  
+  .healthcare-input {
+    @apply w-full px-4 py-3 font-ui bg-white border border-accent/30 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder:text-primary/40;
+  }
+  
+  .healthcare-text-primary {
+    @apply text-primary font-body;
+  }
+  
+  .healthcare-text-secondary {
+    @apply text-primary/70 font-body;
+  }
+  
+  .healthcare-heading {
+    @apply font-heading text-primary;
+  }
+  
+  .healthcare-ui-text {
+    @apply font-ui text-primary;
+  }
+  
+  .healthcare-gradient {
+    @apply bg-gradient-to-r from-primary to-primary-dark text-white;
+  }
+  
+  .healthcare-status-success {
+    @apply bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full text-sm font-ui font-medium;
+  }
+  
+  .healthcare-status-warning {
+    @apply bg-orange-50 text-orange-700 border border-orange-200 px-3 py-1 rounded-full text-sm font-ui font-medium;
+  }
+  
+  .healthcare-status-error {
+    @apply bg-red-50 text-red-700 border border-red-200 px-3 py-1 rounded-full text-sm font-ui font-medium;
+  }
+  
+  .healthcare-status-info {
+    @apply bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-sm font-ui font-medium;
+  }
+}
+
+/* Accessibility improvements */
+@layer base {
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --color-primary: #1a0d26;
+      --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

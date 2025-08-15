@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heart, Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -10,18 +10,35 @@ export const LoginForm: React.FC = () => {
   const [error, setError] = useState('');
   const { signIn } = useAuth();
 
+  // Initialize Embedded Catalyst Authentication on load
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).catalyst?.auth) {
+      const config: any = {
+        // Allow public signup and show social providers
+        providers: ['zoho', 'google', 'microsoft365', 'linkedin', 'facebook'],
+        is_customize_forgot_password: true,
+        forgot_password_id: 'forgotPasswordDivElementId',
+        // Optional redirect after successful sign-in
+        service_url: '/'
+      };
+      (window as any).catalyst.auth.signIn('loginDivElementId', config);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
 
     try {
-      const success = await signIn(email, password);
-      if (!success) {
-        setError('Invalid credentials. Please try again.');
+      const result = await signIn(email, password);
+      if (!result.success) {
+        setError(result.error || 'Invalid credentials. Please try again.');
       }
+      // If successful, the useAuth hook will handle the redirect
     } catch (err) {
-      setError('Authentication failed. Please try again.');
+      console.error('Login form error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -56,16 +73,41 @@ export const LoginForm: React.FC = () => {
             </p>
           </div>
 
+          {/* Embedded Catalyst Authentication - Public Signup + Social Logins */
+          }
+          <div id="loginDivElementId" className="mb-6"></div>
+          <div id="forgotPasswordDivElementId" className="hidden"></div>
+
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.catalyst?.auth) {
+                  const config: any = {
+                    // public signup enabled via embedded auth UI
+                    // enable common social providers
+                    providers: ['zoho', 'google', 'microsoft365', 'linkedin', 'facebook'],
+                    is_customize_forgot_password: true,
+                  };
+                  window.catalyst.auth.signIn('loginDivElementId', config);
+                }
+              }}
+              className="healthcare-button-secondary w-full"
+            >
+              Continue with Embedded Authentication
+            </button>
+          </div>
+
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 font-ui text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" role="form">
             {/* Email Field */}
             <div>
-              <label className="block font-ui font-medium text-primary mb-2">
+              <label htmlFor="email" className="block font-ui font-medium text-primary mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -74,16 +116,17 @@ export const LoginForm: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 font-ui border border-accent/30 rounded-lg focus:ring-2 focus:ring-luxury focus:border-luxury transition-all duration-200 bg-white/50"
+                  className="healthcare-input pl-11"
                   placeholder="Enter your email"
                   required
+                  id="email"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div>
-              <label className="block font-ui font-medium text-primary mb-2">
+              <label htmlFor="password" className="block font-ui font-medium text-primary mb-2">
                 Password
               </label>
               <div className="relative">
@@ -92,9 +135,10 @@ export const LoginForm: React.FC = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-12 py-3 font-ui border border-accent/30 rounded-lg focus:ring-2 focus:ring-luxury focus:border-luxury transition-all duration-200 bg-white/50"
+                  className="healthcare-input pl-11 pr-12"
                   placeholder="Enter your password"
                   required
+                  id="password"
                 />
                 <button
                   type="button"
@@ -110,7 +154,7 @@ export const LoginForm: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-primary to-primary-dark text-white py-3 px-6 rounded-lg font-ui font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="healthcare-button-primary w-full hover:shadow-lg transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center">

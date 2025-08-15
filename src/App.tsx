@@ -6,16 +6,14 @@ import { ClientDashboard } from './components/dashboards/ClientDashboard';
 import { ContractorDashboard } from './components/dashboards/ContractorDashboard';
 import { AdminDashboard } from './components/dashboards/AdminDashboard';
 import { EmployeeDashboard } from './components/dashboards/EmployeeDashboard';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { LoadingFullscreen } from './components/common/Loading';
 
 function App() {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingFullscreen />;
   }
 
   if (!isAuthenticated || !user) {
@@ -38,9 +36,11 @@ function App() {
   };
 
   return (
-    <DashboardLayout user={user}>
-      {renderDashboard()}
-    </DashboardLayout>
+    <ErrorBoundary>
+      <DashboardLayout user={user}>
+        {renderDashboard()}
+      </DashboardLayout>
+    </ErrorBoundary>
   );
 }
 

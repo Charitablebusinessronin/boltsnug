@@ -13,9 +13,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ user, children
     <div className="min-h-screen bg-background">
       <div className="flex">
         <Sidebar user={user} />
-        <div className="flex-1 ml-64">
+        <div className="flex-1 ml-0 lg:ml-64">
           <Header user={user} />
-          <main className="p-6">
+          <main className="p-4 sm:p-6">
             {children}
           </main>
         </div>

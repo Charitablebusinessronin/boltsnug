@@ -21,8 +21,8 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
   };
 
   return (
-    <header className="bg-white border-b border-accent/20 px-6 py-4">
-      <div className="flex items-center justify-between">
+    <header className="bg-white border-b border-accent/20 px-4 sm:px-6 py-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-semibold text-primary">
             {getRoleDisplayName(user.role)}
@@ -32,9 +32,9 @@ export const Header: React.FC<HeaderProps> = ({ user }) => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3 sm:space-x-4">
           {/* Search */}
-          <div className="relative">
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary/40" />
             <input
               type="text"
