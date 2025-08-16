@@ -1,0 +1,43 @@
+# SNUGS & KISSES - LOGIN PORTAL IMPLEMENTATION
+
+## LOGIN PORTAL DESCRIPTION
+Healthcare authentication gateway that routes users to role-based dashboards. **NOT a website or landing page** - just login → dashboard routing for postpartum care platform.
+
+## Brand Guidelines
+**Colors:** `#3B2352` (base), `#D7C7ED` (accent), `#D4AF37` (luxury), `#F8F6FC` (bg)
+**Fonts:** Merriweather (headings), Lato (body), Nunito Sans (UI)
+
+## Zoho Catalyst Authentication
+```html
+<script src="https://static.zohocdn.com/catalyst/sdk/js/4.5.0/catalystWebSDK.js"></script>
+<script src="/__catalyst/sdk/init.js"></script>
+<script>
+const config = {
+  css_url: "/css/embeddediframe.css",
+  service_url: "/app/index.html",
+  is_customize_forgot_password: true,
+  forgot_password_id: "forgotPasswordDivElementId",
+  forgot_password_css_url: "/css/forgotPwd.css"
+};
+catalyst.auth.signIn("loginDivElementId", config);
+</script>
+```
+
+## 4 Dashboard Routes After Login
+**Client Portal:** `/client-dashboard` - Service Requests | Video Calls | Hours | Feedback | Contracts | Care Matching
+**Contractor Portal:** `/contractor-dashboard` - Job Board | Applications | Documents | Training | Messages  
+**Admin Portal:** `/admin-dashboard` - Users | Analytics | Automation | OCR Processing | Compliance
+**Employee Portal:** `/employee-dashboard` - Staff Schedule | Internal Comms | Training | HR Tools
+
+## 16 Serverless Functions (Zoho Catalyst)
+**Client (8):** video-call, interview, service-request, info-sheet, contracts, hours, feedback, caregiver-matching
+**Contractor (3):** application, documents, orientation  
+**Admin (1):** automation
+**HR (4):** employee-onboarding, performance-tracking, compliance-monitoring, recruitment-analytics
+
+## Zoho API Integration
+**CRM:** Lead/contact management, workflows
+**Calendar:** Interview scheduling, appointments  
+**Books:** Hour tracking, billing, invoicing
+**Learn:** Training modules, certification
+**Zia:** OCR processing, sentiment analysis, AI matching
