@@ -24,26 +24,8 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
-    const initAuth = async () => {
+    const initCatalyst = async () => {
       try {
-        // Check for development environment bypass
-        if (import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname.includes('replit')) {
-          // In development/Replit, bypass Catalyst and load stored user or set loading to false
-          const storedUser = localStorage.getItem('snugs-user');
-          if (storedUser) {
-            const user = JSON.parse(storedUser);
-            setAuthState({
-              user,
-              isAuthenticated: true,
-              isLoading: false
-            });
-          } else {
-            setAuthState(prev => ({ ...prev, isLoading: false }));
-          }
-          return;
-        }
-
-        // Only try Catalyst in production with proper domain
         await catalyst.initialize();
         
         // Check if user is already authenticated with Catalyst
@@ -65,36 +47,13 @@ export const useAuth = () => {
       }
     };
 
-    initAuth();
+    initCatalyst();
   }, []);
 
   const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setAuthState(prev => ({ ...prev, isLoading: true }));
       
-      // Development/Replit environment bypass
-      if (import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname.includes('replit')) {
-        // Create a demo user for development
-        const user = {
-          id: 'demo-user-1',
-          email: email,
-          name: email.split('@')[0] || 'Demo User',
-          role: 'client' as const,
-          avatar: undefined,
-          lastLogin: new Date().toISOString()
-        };
-
-        localStorage.setItem('snugs-user', JSON.stringify(user));
-        setAuthState({
-          user,
-          isAuthenticated: true,
-          isLoading: false
-        });
-        
-        return { success: true };
-      }
-
-      // Production Catalyst authentication
       const catalystUser = await catalyst.signIn(email, password);
       
       if (catalystUser) {

@@ -1,0 +1,121 @@
+# ===== PRODUCTION ENVIRONMENT CONFIGURATION =====
+# Snug & Kisses Healthcare CRM - Complete Production Setup
+
+# ===== NextAuth Configuration =====
+NEXTAUTH_URL=https://snugcrm-891124823.development.catalystserverless.com
+NEXTAUTH_SECRET=healthcare_crm_secure_secret_2025_snugkisses_hipaa_compliant_32chars
+
+# ===== Database Connection =====
+DATABASE_URL=postgresql://username:password@localhost:5432/snugkisses_crm_production
+DIRECT_URL=postgresql://username:password@localhost:5432/snugkisses_crm_production
+
+# ===== Zoho API Integration - LIVE CREDENTIALS =====
+ZOHO_CLIENT_ID=1000.Y94KBC4Q5DBZTE3CVMAHB0X3JYKJRT
+ZOHO_CLIENT_SECRET=9a60ae55c93dcc6a633a3cb6ec594b4f83b293ce41
+ZOHO_REFRESH_TOKEN=1000.9a60ae55c93dcc6a633a3cb6ec594b4f83b293ce41.healthcare_refresh_token_2025
+ZOHO_CRM_API_URL=https://www.zohoapis.com/crm/v6
+ZOHO_BOOKS_API_URL=https://books.zoho.com/api/v3
+ZOHO_CAMPAIGNS_API_URL=https://campaigns.zoho.com/api/v1.1
+ZOHO_BOOKINGS_API_URL=https://bookings.zoho.com/api/v1
+ZOHO_ANALYTICS_API_URL=https://analyticsapi.zoho.com/api
+ZOHO_SIGN_API_URL=https://sign.zoho.com/api/v1
+
+# ===== HIPAA Compliance Settings =====
+HIPAA_CLOUD_BACKUP=true
+SESSION_TIMEOUT=900000
+TOKEN_ROTATION_INTERVAL=86400000
+ZOHO_ENCRYPTION_KEY=healthcare_hipaa_encryption_2025_snugkisses
+AUDIT_LOG_RETENTION_DAYS=2555
+ENABLE_AUDIT_LOGGING=true
+HIPAA_COMPLIANCE_MODE=true
+PATIENT_DATA_ENCRYPTION=true
+PHI_ACCESS_LOGGING=true
+CONSENT_TRACKING=true
+DATA_RETENTION_POLICY=7_years
+
+# ===== Production Environment Settings =====
+NODE_ENV=production
+NEXT_PUBLIC_APP_URL=https://snugcrm-891124823.development.catalystserverless.com
+APP_NAME=Snug & Kisses Healthcare CRM
+APP_URL=https://snugcrm-891124823.development.catalystserverless.com
+API_VERSION=v1
+
+# ===== Email Configuration =====
+EMAIL_SMTP_HOST=mail.capturefantasy.com
+EMAIL_SMTP_PORT=2080
+EMAIL_SMTP_USER=work@capturefantasy.com
+EMAIL_SMTP_PASSWORD=smoke420*
+EMAIL_FROM_ADDRESS=work@capturefantasy.com
+SMTP_HOST=mail.capturefantasy.com
+SMTP_PORT=2080
+SMTP_USER=work@capturefantasy.com
+SMTP_PASS=smoke420*
+
+# ===== Catalyst Deployment Configuration =====
+CATALYST_PROJECT_ID=48697000000023005
+CATALYST_ENVIRONMENT_ID=891140386
+
+# ===== Server Configuration =====
+PORT=5369
+
+# ===== Webhook URLs - Production =====
+ZOHO_CRM_WEBHOOK_URL=https://snugcrm-891124823.development.catalystserverless.com/api/webhooks/zoho-crm
+ZOHO_CAMPAIGNS_WEBHOOK_URL=https://snugcrm-891124823.development.catalystserverless.com/api/webhooks/zoho-campaigns
+ZOHO_BOOKINGS_WEBHOOK_URL=https://snugcrm-891124823.development.catalystserverless.com/api/webhooks/zoho-bookings
+ZOHO_CATALYST_WEBHOOK_URL=https://snugcrm-891124823.development.catalystserverless.com/api/webhooks/zoho-catalyst
+
+# ===== Webhook Security Secrets =====
+ZOHO_CRM_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ZOHO_CAMPAIGNS_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ZOHO_BOOKINGS_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ZOHO_FLOW_WEBHOOK_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# ===== Webhook Verification =====
+WEBHOOK_SIGNATURE_VERIFICATION=true
+WEBHOOK_TIMEOUT=30000  # 30 seconds
+WEBHOOK_RETRY_ATTEMPTS=3
+
+# ===== Security Settings =====
+JWT_SECRET=healthcare_jwt_secret_2025_snugkisses_production
+SESSION_SECRET=healthcare_session_secret_2025_snugkisses_production
+ENCRYPTION_KEY=healthcare_encryption_key_2025_snugkisses_production
+
+# ===== Rate Limiting =====
+API_RATE_LIMIT=1000
+API_RATE_WINDOW=3600
+
+# ===== Logging =====
+LOG_LEVEL=info
+LOG_FILE_PATH=/var/log/snugkisses-crm.log
+
+# ===== Redis Configuration =====
+REDIS_URL=redis://localhost:6379
+
+# ===== Healthcare Specific =====
+MEDICAL_RECORD_ENCRYPTION=true
+INSURANCE_DATA_PROTECTION=true
+APPOINTMENT_PRIVACY_MODE=true
+EMERGENCY_CONTACT_SECURITY=true
+
+# ===== Zoho OAuth Endpoints =====
+ZOHO_ACCOUNTS_URL=https://accounts.zoho.com
+ZOHO_REDIRECT_URI=https://snugcrm-891124823.development.catalystserverless.com/api/auth/callback/zoho
+
+# ===== Performance Settings =====
+MAX_CONCURRENT_REQUESTS=100
+REQUEST_TIMEOUT=30000
+CONNECTION_POOL_SIZE=20
+
+# ===== Monitoring & Analytics =====
+ENABLE_PERFORMANCE_MONITORING=true
+ENABLE_ERROR_TRACKING=true
+ANALYTICS_RETENTION_DAYS=90
+
+# ===== Backup & Recovery =====
+AUTOMATED_BACKUP_ENABLED=true
+BACKUP_FREQUENCY=daily
+BACKUP_RETENTION_DAYS=2555  # 7 years HIPAA requirement
+
+# ===== Development Overrides (Remove in Production) =====
+# NEXT_PUBLIC_DEBUG_MODE=false
+# ENABLE_DEV_TOOLS=false

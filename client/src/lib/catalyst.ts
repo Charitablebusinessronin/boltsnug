@@ -37,9 +37,9 @@ export class CatalystService {
 
   constructor() {
     this.config = {
-      projectId: import.meta.env.VITE_CATALYST_PROJECT_ID || '30300000000011038',
-      environment: import.meta.env.VITE_ENVIRONMENT || 'development',
-      domain: import.meta.env.VITE_CATALYST_APP_URL || 'https://project-rainfall-891140386.development.catalystserverless.com'
+      projectId: import.meta.env.VITE_CATALYST_PROJECT_ID || '48697000000023005',
+      environment: import.meta.env.VITE_CATALYST_ENV_ID || '891140386',
+      domain: import.meta.env.VITE_CATALYST_DOMAIN || 'snugcrm-891124823.development.catalystserverless.com'
     };
   }
 
