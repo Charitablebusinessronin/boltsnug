@@ -6,7 +6,14 @@
     <title>Snugs & Kisses Healthcare Platform</title>
     <!-- Zoho Catalyst SDK Scripts -->
     <script src="https://static.zohocdn.com/catalyst/sdk/js/4.5.0/catalystWebSDK.js"></script>
-    <script src="/__catalyst/sdk/init.js"></script>
+    <script>
+      // Initialize Catalyst manually for Replit environment
+      window.catalystConfig = {
+        projectId: '48697000000023005',
+        environment: '891140386',
+        domain: 'snugcrm-891124823.development.catalystserverless.com'
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>

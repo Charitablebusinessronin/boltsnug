@@ -68,7 +68,7 @@ export class CatalystService {
   private waitForCatalyst(): Promise<void> {
     return new Promise((resolve, reject) => {
       let attempts = 0;
-      const maxAttempts = 50;
+      const maxAttempts = 30; // Reduced attempts for development
       
       const checkCatalyst = () => {
         if (window.catalyst && window.catalyst.auth) {
@@ -77,7 +77,9 @@ export class CatalystService {
           attempts++;
           setTimeout(checkCatalyst, 100);
         } else {
-          reject(new Error('Catalyst SDK failed to load'));
+          // In development/Replit, gracefully handle SDK unavailability
+          console.warn('Catalyst SDK not fully available - running in development mode');
+          reject(new Error('Catalyst SDK not available in development environment'));
         }
       };
       
@@ -87,10 +89,18 @@ export class CatalystService {
 
   public async signIn(email: string, password: string): Promise<CatalystUser> {
     if (!this.isInitialized) {
-      await this.initialize();
+      try {
+        await this.initialize();
+      } catch (error) {
+        throw new Error('Catalyst authentication not available in development environment');
+      }
     }
 
     try {
+      if (!window.catalyst || !window.catalyst.auth || typeof window.catalyst.auth.signIn !== 'function') {
+        throw new Error('Catalyst authentication not available');
+      }
+
       const response = await window.catalyst.auth.signIn({
         email_id: email,
         password: password
@@ -122,10 +132,20 @@ export class CatalystService {
 
   public async getCurrentUser(): Promise<CatalystUser | null> {
     if (!this.isInitialized) {
-      await this.initialize();
+      try {
+        await this.initialize();
+      } catch (error) {
+        console.warn('Catalyst not available, running in development mode');
+        return null;
+      }
     }
 
     try {
+      if (!window.catalyst || !window.catalyst.auth || typeof window.catalyst.auth.getCurrentUser !== 'function') {
+        console.warn('Catalyst auth methods not available');
+        return null;
+      }
+      
       const response = await window.catalyst.auth.getCurrentUser();
       if (response && response.status === 'success') {
         return response.data;
